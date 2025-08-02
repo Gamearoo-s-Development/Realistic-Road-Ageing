@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "roadageaddon",
+    "name": "Road Ageing Addon",
+    "description": "Adds realistic road wear over time for Fureniku's Roads.",
+    "version": "1.0.0",
+    "mcversion": "1.12.2",
+    "url": "https://gamearoo.dev",
+    "updateUrl": "",
+    "authorList": ["Gamearoo"],
+    "credits": "Thanks to Fureniku for the base mod.",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": ["furenikusroads"]
+  }
+]
