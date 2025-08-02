@@ -10,12 +10,12 @@ public class CommandRoadAgeNow extends CommandBase {
 
     @Override
     public String getName() {
-        return "roadage";
+        return "roadage_now";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/roadage now";
+        return "/roadage_now now";
     }
 
     @Override
@@ -24,7 +24,7 @@ public class CommandRoadAgeNow extends CommandBase {
             boolean success = RoadAgeManager.ageAllLoadedRoadBlocks(sender.getEntityWorld());
             sender.sendMessage(new TextComponentString("[RoadAge] Manual aging triggered."));
         } else {
-            sender.sendMessage(new TextComponentString("[RoadAge] Usage: /roadage now"));
+            sender.sendMessage(new TextComponentString("[RoadAge] Usage: /roadage_now now"));
         }
     }
 

@@ -13,12 +13,12 @@ import java.io.File;
 public class RoadAgeReloadCommand extends CommandBase {
     @Override
     public String getName() {
-        return "roadage";
+        return "roadage_reload";
     }
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/roadage reload";
+        return "/roadage_reload reload";
     }
 
     @Override
@@ -28,7 +28,7 @@ public class RoadAgeReloadCommand extends CommandBase {
             RoadAgeConfig.load(configDir);
             sender.sendMessage(new TextComponentString("§a[RoadAge] Config reloaded successfully."));
         } else {
-            sender.sendMessage(new TextComponentString("§cUsage: /roadage reload"));
+            sender.sendMessage(new TextComponentString("§cUsage: /roadage_reload reload"));
         }
     }
 

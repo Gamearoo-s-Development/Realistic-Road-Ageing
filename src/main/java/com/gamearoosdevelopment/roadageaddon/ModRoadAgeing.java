@@ -24,7 +24,7 @@ public class ModRoadAgeing
 {
     public static final String MODID = "roadageaddon";
     public static final String NAME = "Road Ageing Addon";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "1.0.1";
 
     private static Logger logger;
 
