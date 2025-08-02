@@ -5,6 +5,9 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import java.util.Random;
+
+import com.gamearoosdevelopment.roadageaddon.RoadAgeConfig;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +17,8 @@ public class RoadAger {
         new ResourceLocation("furenikusroads", "road_block_dark"),
         new ResourceLocation("furenikusroads", "road_block_fine"),
         new ResourceLocation("furenikusroads", "road_block_standard"),
-        new ResourceLocation("furenikusroads", "road_block_light")
+        new ResourceLocation("furenikusroads", "road_block_light"),
+        new ResourceLocation("roadageaddon", "road_block_pothole")
     );
 
     public static boolean ageBlock(World world, BlockPos pos) {
@@ -36,13 +40,31 @@ public class RoadAger {
             return false;
         }
 
-        Block nextBlock = Block.REGISTRY.getObject(STAGES.get(index + 1));
-        if (nextBlock != null) {
-            IBlockState next = nextBlock.getStateFromMeta(meta);
-            world.setBlockState(pos, next, 3);
-            System.out.println("[RoadAger] Aged block at " + pos + " to " + nextBlock.getRegistryName() + " (meta " + meta + ")");
-            return true;
+        // If transitioning to final stage (right before pothole), add chance logic
+        boolean isFinalNormalStage = (index == STAGES.size() - 2);
+        boolean goToPothole = false;
+
+        if (isFinalNormalStage) {
+            int roll = new Random().nextInt(100); // 0–99
+            goToPothole = roll > RoadAgeConfig.potholeChancePercent;
+            if (goToPothole && RoadAgeConfig.potholeChancePercent != 0) {
+                index++; // force into pothole
+            }
         }
+
+        if (index < STAGES.size() - 1) {
+            Block nextBlock = Block.REGISTRY.getObject(STAGES.get(index + 1));
+            if (nextBlock != null) {
+                IBlockState next = nextBlock.getStateFromMeta(meta);
+                world.setBlockState(pos, next, 3);
+                System.out.println("[RoadAger] Aged block at " + pos + " to " + nextBlock.getRegistryName() + " (meta " + meta + ")");
+                return true;
+            }
+            System.out.println("[RoadAger] Failed to find next block for ID " + id);
+        } else {
+            System.out.println("[RoadAger] Skipping: already at final stage.");
+        }
+
 
         System.out.println("[RoadAger] Failed to find next block for ID " + id);
         return false;

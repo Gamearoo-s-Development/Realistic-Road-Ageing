@@ -45,8 +45,8 @@ public class RoadAgeManager {
                 for (int dz = -radius; dz <= radius; dz++) {
                     Chunk chunk = world.getChunkFromChunkCoords(cx + dx, cz + dz);
 
-                    BlockPos min = new BlockPos((chunk.x << 4), 0, (chunk.z << 4));
-                    BlockPos max = new BlockPos((chunk.x << 4) + 15, 100, (chunk.z << 4) + 15);
+                    BlockPos min = new BlockPos(chunk.x << 4, 0, chunk.z << 4);
+                    BlockPos max = new BlockPos((chunk.x << 4) + 15, 5, (chunk.z << 4) + 15);
 
 
                     for (BlockPos pos : BlockPos.getAllInBoxMutable(min, max)) {
@@ -68,6 +68,7 @@ public class RoadAgeManager {
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.world.isRemote) return;
+        if(RoadAgeConfig.irlIntervalMinutes == 0) return;
         double intervalMs = RoadAgeConfig.irlIntervalMinutes * 60L * 1000L;
         long now = System.currentTimeMillis();
         if (now - lastRun < intervalMs) return; // Not time yet
@@ -84,9 +85,8 @@ public class RoadAgeManager {
 
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dz = -radius; dz <= radius; dz++) {
-                	Chunk chunk = world.getChunkFromChunkCoords(cx + dx, cz + dz);
-                	BlockPos min = new BlockPos((chunk.x << 4), 0, (chunk.z << 4));
-                    BlockPos max = new BlockPos((chunk.x << 4) + 15, 100, (chunk.z << 4) + 15);
+                    BlockPos min = new BlockPos((cx + dx) << 4, 0, (cz + dz) << 4);
+                    BlockPos max = new BlockPos((cx + dx) << 4 | 15, 5, (cz + dz) << 4 | 15);
 
                     for (BlockPos pos : BlockPos.getAllInBoxMutable(min, max)) {
                         IBlockState state = world.getBlockState(pos);
