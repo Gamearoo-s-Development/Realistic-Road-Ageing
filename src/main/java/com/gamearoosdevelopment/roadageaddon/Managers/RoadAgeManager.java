@@ -68,7 +68,7 @@ public class RoadAgeManager {
     @SubscribeEvent
     public void onWorldTick(TickEvent.WorldTickEvent event) {
         if (event.phase != TickEvent.Phase.END || event.world.isRemote) return;
-        if(RoadAgeConfig.irlIntervalMinutes == 0) return;
+        if(RoadAgeConfig.irlIntervalMinutes == 0 || RoadAgeConfig.irlIntervalMinutes == 0.0) return;
         double intervalMs = RoadAgeConfig.irlIntervalMinutes * 60L * 1000L;
         long now = System.currentTimeMillis();
         if (now - lastRun < intervalMs) return; // Not time yet
