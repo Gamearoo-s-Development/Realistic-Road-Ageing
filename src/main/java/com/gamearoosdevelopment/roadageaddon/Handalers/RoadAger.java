@@ -5,12 +5,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import java.util.Random;
-
-import com.gamearoosdevelopment.roadageaddon.RoadAgeConfig;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
+import com.gamearoosdevelopment.roadageaddon.RoadAgeConfig;
 
 public class RoadAger {
     private static final List<ResourceLocation> STAGES = Arrays.asList(
@@ -25,8 +25,8 @@ public class RoadAger {
         IBlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
         int meta = block.getMetaFromState(state);
-        ResourceLocation id = Block.REGISTRY.getNameForObject(block);
 
+        ResourceLocation id = Block.REGISTRY.getNameForObject(block);
         System.out.println("[RoadAger] Checking block at " + pos + ": " + id + " (meta: " + meta + ")");
 
         int index = STAGES.indexOf(id);
@@ -36,38 +36,40 @@ public class RoadAger {
         }
 
         if (index == STAGES.size() - 1) {
-            System.out.println("[RoadAger] Skipping: already at final stage.");
+            System.out.println("[RoadAger] Skipping: already at pothole stage.");
             return false;
         }
 
-        // If transitioning to final stage (right before pothole), add chance logic
-        boolean isFinalNormalStage = (index == STAGES.size() - 2);
-        boolean goToPothole = false;
-
-        if (isFinalNormalStage) {
-            int roll = new Random().nextInt(100); // 0–99
-            goToPothole = roll > RoadAgeConfig.potholeChancePercent;
-            if (goToPothole && RoadAgeConfig.potholeChancePercent != 0) {
-                index++; // force into pothole
+        boolean isAtLight = (index == STAGES.size() - 2); // road_block_light
+        if (isAtLight) {
+            if (RoadAgeConfig.potholeChancePercent > 0) {
+                int roll = new Random().nextInt(100); // 0–99
+                if (roll < RoadAgeConfig.potholeChancePercent) {
+                    Block potholeBlock = Block.REGISTRY.getObject(STAGES.get(index + 1));
+                    if (potholeBlock != null) {
+                        int newMeta = (meta > 1) ? meta - 1 : meta;
+                        IBlockState newState = potholeBlock.getStateFromMeta(newMeta);
+                        world.setBlockState(pos, newState, 3);
+                        System.out.println("[RoadAger] Pothole placed at " + pos + " (meta: " + newMeta + ")");
+                        return true;
+                    }
+                }
             }
+
+            System.out.println("[RoadAger] Skipping: light is final stage and pothole not selected.");
+            return false;
         }
 
-        if (index < STAGES.size() - 1) {
-            Block nextBlock = Block.REGISTRY.getObject(STAGES.get(index + 1));
-            if (nextBlock != null) {
-                IBlockState next = nextBlock.getStateFromMeta(meta);
-                world.setBlockState(pos, next, 3);
-                System.out.println("[RoadAger] Aged block at " + pos + " to " + nextBlock.getRegistryName() + " (meta " + meta + ")");
-                return true;
-            }
-            System.out.println("[RoadAger] Failed to find next block for ID " + id);
-        } else {
-            System.out.println("[RoadAger] Skipping: already at final stage.");
+        // Proceed with normal aging
+        Block nextBlock = Block.REGISTRY.getObject(STAGES.get(index + 1));
+        if (nextBlock != null) {
+            IBlockState next = nextBlock.getStateFromMeta(meta);
+            world.setBlockState(pos, next, 3);
+            System.out.println("[RoadAger] Aged block at " + pos + " → " + nextBlock.getRegistryName() + " (meta: " + meta + ")");
+            return true;
         }
-
 
         System.out.println("[RoadAger] Failed to find next block for ID " + id);
         return false;
     }
-
 }
