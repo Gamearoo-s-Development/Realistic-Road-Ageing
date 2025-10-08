@@ -1,34 +1,29 @@
 package com.gamearoosdevelopment.roadageaddon;
 
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
-public class ClientProxy extends CommonProxy {
+/**
+ * Base proxy for RoadAge Addon.
+ * Used for separating client and server side code.
+ */
+public class CommonProxy {
 
-    @Override
     public void preInit(FMLPreInitializationEvent event) {
-        super.preInit(event);
-        // Client-only: model loading, rendering registrations
+        // Register blocks, items, tile entities, etc.
     }
 
-    @Override
     public void init(FMLInitializationEvent event) {
-        super.init(event);
-        // Client-only: GUI handlers, particle systems
+        // Common initialization logic
     }
 
-    @Override
     public void postInit(FMLPostInitializationEvent event) {
-        super.postInit(event);
+        // Cross-mod interactions or cleanup
     }
 
-    @Override
     public void registerItemRenderer(Item item, int meta, String id) {
-        ModelLoader.setCustomModelResourceLocation(item, meta,
-                new ModelResourceLocation(id, "inventory"));
+        // Server side does nothing here — overridden on client.
     }
 }
