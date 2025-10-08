@@ -28,7 +28,7 @@ public class ModRoadAgeing
 {
     public static final String MODID = "roadageaddon";
     public static final String NAME = "Road Ageing Addon";
-    public static final String VERSION = "1.1.1";
+    public static final String VERSION = "1.1.3";
     @SidedProxy(clientSide = "com.gamearoosdevelopment.roadageaddon.ClientProxy",
             serverSide = "com.gamearoosdevelopment.roadageaddon.CommonProxy")
 public static CommonProxy proxy;
